@@ -9,6 +9,18 @@
   <p><strong>ISBN:</strong> {{ book.isbn }}</p>
   <img src="{{ book.cover_image }}" alt="{{ book.title }} cover" width="200">
 
+  <h2>Отзывы:</h2>
+<ul>
+    {% for review in reviews %}
+        <li><strong>{{ review.author.username }}</strong>: {{ review.text }} — Оценка: {{ review.mark }}</li>
+    {% empty %}
+        <li>Отзывов пока нет.</li>
+    {% endfor %}
+</ul>
+
+<h3>Средняя оценка: {{ average_mark|default:"Нет оценок" }}</h3>
+
+
   <iframe width="560" height="315" src="https://www.youtube.com/embed/ID"
 frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media;
 gyroscope; picture-in-picture" allowfullscreen></iframe>

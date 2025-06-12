@@ -17,3 +17,14 @@ def book_detail(request, pk):
 
 def book_post(request):
     return HttpResponse("Сегодня мы обсуждаем книгу 'Исскуство войны' Сунь-Цзы.")
+
+
+def book_detail(request, pk):
+    book = get_object_or_404(models.Book, pk=pk)
+    reviews = book.reviews.all()
+    average_mark = reviews.aggregate(models.Avg('mark'))['mark__avg']
+    return render(request, 'book_detail.html', {
+        'book': book,
+        'reviews': reviews,
+        'average_mark': average_mark
+    })
