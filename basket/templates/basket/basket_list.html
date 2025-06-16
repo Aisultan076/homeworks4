@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+<h2>Список заказов</h2>
+<a href="{% url 'basket_create' %}">Создать заказ</a>
+<ul>
+  {% for order in orders %}
+    <li>
+      {{ order.full_name }} - {{ order.status }}
+      <a href="{% url 'basket_update' order.pk %}">Изменить</a>
+      <a href="{% url 'basket_delete' order.pk %}">Удалить</a>
+    </li>
+  {% endfor %}
+</ul>
+
+</body>
+</html>
