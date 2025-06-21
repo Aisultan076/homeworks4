@@ -12,5 +12,33 @@
       </li>
     {% endfor %}
   </ul>
+
+ <form method="get">
+  <input type="text" name="q" placeholder="Поиск книги...">
+  <button type="submit">Искать</button>
+</form>
+
+<ul>
+  {% for book in books %}
+    <li>{{ book.title }}</li>
+  {% endfor %}
+</ul>
+<ul>
+  {% for book in books %}
+    <li>{{ book.title }}</li>
+  {% endfor %}
+</ul>
+
+<div>
+  {% if books.has_previous %}
+    <a href="?page={{ books.previous_page_number }}">« Назад</a>
+  {% endif %}
+
+  Страница {{ books.number }} из {{ books.paginator.num_pages }}
+
+  {% if books.has_next %}
+    <a href="?page={{ books.next_page_number }}">Вперед »</a>
+  {% endif %}
+</div>
 </body>
 </html>

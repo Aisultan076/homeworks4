@@ -1,0 +1,17 @@
+<h2>Фильтр по тегам:</h2>
+<ul>
+  {% for tag in tags %}
+    <li>
+      <a href="{% url 'product_by_tag' tag.id %}">
+        {% if selected_tag == tag.id %}<strong>{{ tag.name }}</strong>{% else %}{{ tag.name }}{% endif %}
+      </a>
+    </li>
+  {% endfor %}
+</ul>
+
+<h3>Все продукты:</h3>
+<ul>
+  {% for product in products %}
+    <li>{{ product.title }} - {{ product.description }}</li>
+  {% endfor %}
+</ul>

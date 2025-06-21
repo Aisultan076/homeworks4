@@ -26,7 +26,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'books',
-    'basket'
+    'basket',
+    'users',
+    'captcha',
 ]
 
 MIDDLEWARE = [
