@@ -15,3 +15,10 @@
     <li>{{ product.title }} - {{ product.description }}</li>
   {% endfor %}
 </ul>
+{% for tag in tags %}
+    <a href="{% url 'product_list_by_tag' tag.id %}">
+        {{ tag.name }}
+    </a>
+{% endfor %}
+
+<a href="{% url 'product_list' %}">Все</a>

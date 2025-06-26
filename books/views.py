@@ -1,42 +1,39 @@
-from lib2to3.fixes.fix_input import context
-
 from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
-from django.template.defaultfilters import title
-from django.core.paginator import Paginator
-from . import models
+from django.views.generic import ListView, DetailView, View
+from django.shortcuts import render
+from django.db.models import Avg
+from .models import Book
 
 
-def book_list(request):
-    query = request.GET.get('q')
-    books = models.Book.objects.all()
-    book_queryset = models.Book.objects.all()
-    if query:
-        books = books.filter(title__icontains=query)
-        book_queryset = book_queryset.filter(title__icontains=query)
+class BookListView(ListView):
+    model = Book
+    template_name = 'book_list.html'
+    context_object_name = 'books'
+    paginate_by = 5
 
-    paginator = Paginator(book_queryset, 5)
-    page_number = request.GET.get('page')
-    books = paginator.get_page(page_number)
-
-    return render(request, 'book/book_list.html', {'books': books})
-
-def book_detail(request, pk):
-    book = get_object_or_404(models.Book, pk=pk)
-    return render(request, 'book/book_detail.html', {'book': book})
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        queryset = super().get_queryset()
+        if query:
+            queryset = queryset.filter(title__icontains=query)
+        return queryset
 
 
+class BookDetailView(DetailView):
+    model = Book
+    template_name = 'book_detail.html'
+    context_object_name = 'book'
 
-def book_post(request):
-    return HttpResponse("Сегодня мы обсуждаем книгу 'Исскуство войны' Сунь-Цзы.")
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        book = self.get_object()
+        reviews = book.reviews.all()
+        average_mark = reviews.aggregate(Avg('mark'))['mark__avg']
+        context['reviews'] = reviews
+        context['average_mark'] = average_mark
+        return context
 
 
-def book_detail(request, pk):
-    book = get_object_or_404(models.Book, pk=pk)
-    reviews = book.reviews.all()
-    average_mark = reviews.aggregate(models.Avg('mark'))['mark__avg']
-    return render(request, 'book_detail.html', {
-        'book': book,
-        'reviews': reviews,
-        'average_mark': average_mark
-    })
+class BookPostView(View):
+    def get(self, request):
+        return HttpResponse("Сегодня мы обсуждаем книгу 'Искусство войны' Сунь-Цзы.")
