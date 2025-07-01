@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Список фильмов</h1>
+
+<form method="get">
+    <input type="text" name="q" placeholder="Поиск по названию" value="{{ request.GET.q }}">
+    
+    <select name="genre">
+        <option value="">Все жанры</option>
+        <option value="horror" {% if request.GET.genre =='horror' %}selected{% endif %}>Ужасы</option>
+        <option value="melodrama" {% if request.GET.genre =='boevik' %}selected{% endif %}>Боевик</option>
+    </select>
+
+    <select name="sort">
+        <option value="">Без сортировки</option>
+        <option value="date" {% if request.GET.sort =='date' %}selected{% endif %}>Сначала новые</option>
+        <option value="rating" {% if request.GET.sort =='rating' %}selected{% endif %}>По рейтингу</option>
+    </select>
+
+    <button type="submit">Поиск</button>
+</form>
+
+{% if user.is_authenticated %}
+  <p><a href="{% url 'movie-add' %}">➕ Добавить фильм</a></p>
+{% endif %}
+
+<ul>
+  {% for movie in movies %}
+    <li>
+      <strong>{{ movie.title }}</strong> ({{ movie.genre }}) — {{ movie.rating }} ★
+      <a href="{% url 'movie-detail' movie.pk %}">Подробнее</a>
+
+      {% if user == movie.author %}
+        | <a href="{% url 'movie-edit' movie.pk %}">✏️</a>
+        <a href="{% url 'movie-delete' movie.pk %}">🗑️</a>
+      {% endif %}
+    </li>
+  {% empty %}
+    <li>Нет фильмов</li>
+  {% endfor %}
+</ul>
+
+<div>
+  {% if is_paginated %}
+    <div>
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}{{ request.GET.urlencode|cut:'page=' }}">← Назад</a>
+      {% endif %}
+      <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{{ request.GET.urlencode|cut:'page=' }}">Вперёд →</a>
+      {% endif %}
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
